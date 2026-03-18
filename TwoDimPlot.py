@@ -34,3 +34,5 @@ for i in range(len(x)):
     plotter.render()
 
 plotter.show(window_size=[1920,960],title="2D Plot")
+
+print()
