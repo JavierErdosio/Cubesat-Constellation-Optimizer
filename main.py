@@ -2,7 +2,8 @@ import numpy as np
 from stateVector import stateVector
 from Keplerianos import Keplerianos
 from TwoBodySolver import SatPoints
-from ThreeDimGraph import ThreeDimGraph as graph
+from ThreeDimGraph import ThreeDimGraph as ThreeDimGraph
+from TwoDimPlot import TwoDimPlot
 
 #Extras
 Video = False
@@ -45,8 +46,10 @@ else:
 Orbits = {}
 for i in SatRogVog: 
     points = SatPoints(hours,steps,SatRogVog[i])
-    Orbits["O"+i] = points 
+    Orbits["O"+i] = points
 
+#Ground Track
+TwoDimPlot(hours,steps,Orbits)
 
 #3D Graph
-graph(steps,Orbits,Video,SatCount)
+ThreeDimGraph(hours,steps,Orbits,Video,SatCount)
