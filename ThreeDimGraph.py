@@ -5,7 +5,7 @@ import numpy as np
 
 R_earth = 6378
 
-def ThreeDimGraph(n_frames,Orbits,video,SatCount):
+def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount):
     plotter = pv.Plotter()
     
     # Crear esfera Tierra
@@ -49,16 +49,16 @@ def ThreeDimGraph(n_frames,Orbits,video,SatCount):
 
     if video == True:
         plotter.open_movie("satelite.mp4",framerate=n_frames/30,quality=10)
-        plotter.show(window_size=[1920,1080],interactive_update=True)
+        plotter.show(window_size=[1920,1080],interactive_update=True,title="Orbit Visualizer")
     else:
-        plotter.show(window_size=[1920,1080],interactive_update=True)
+        plotter.show(window_size=[1920,1080],interactive_update=True,title="Orbit Visualizer")
 
     for i in range(n_frames):
         
         for j in range(SatCount):
             sats["satActor%i"%j].SetPosition(Orbits["OSat%i"%j][i])
-        earth_actor.RotateZ(360/n_frames)
-        plotter.add_text("Tiempo: %.3f"%(i/n_frames*24), position='lower_left', font_size=20,color="white", name="mi_etiqueta")
+        earth_actor.RotateZ(360*(hours/23.93446944)/n_frames)
+        plotter.add_text("Tiempo: %.3f"%(i/n_frames*hours), position='lower_left', font_size=20,color="white", name="mi_etiqueta")
         
         #Vision Cone
         for j in range(SatCount):
