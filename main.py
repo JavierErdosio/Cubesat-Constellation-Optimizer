@@ -15,6 +15,9 @@ SatCount = 3
 hours = 23.93446944 #Sidereal day 
 steps = 30*60
 
+#Satellite
+CameraAngle = 4.46 #[deg]
+
 #Orbit
 e = 0.74 #[-] Excentricidad
 hp = 600 #[km] Altura del perigeo
@@ -52,4 +55,4 @@ for i in SatRogVog:
 TwoDimPlot(hours,steps,Orbits)
 
 #3D Graph
-ThreeDimGraph(hours,steps,Orbits,Video,SatCount)
+ThreeDimGraph(hours,steps,Orbits,Video,SatCount,CameraAngle)

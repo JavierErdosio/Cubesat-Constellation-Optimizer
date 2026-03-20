@@ -5,7 +5,7 @@ import numpy as np
 
 R_earth = 6378
 
-def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount):
+def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,CameraAngle):
     plotter = pv.Plotter()
     
     # Crear esfera Tierra
@@ -62,7 +62,7 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount):
         
         #Vision Cone
         for j in range(SatCount):
-            cone = pv.Cone(center=Orbits["OSat%i"%j][i]/2,direction=Orbits["OSat%i"%j][i],height=np.linalg.norm(Orbits["OSat%i"%j][i]),angle=7, resolution=100)
+            cone = pv.Cone(center=Orbits["OSat%i"%j][i]/2,direction=Orbits["OSat%i"%j][i],height=np.linalg.norm(Orbits["OSat%i"%j][i]),angle=CameraAngle, resolution=100)
             cone_actor = plotter.add_mesh(cone,color="blue",opacity=0.5,name="cone%i"%j)
         
         if video == True:
