@@ -32,7 +32,7 @@ Generates the satellite ground track over Earth's surface:
 
 Interactive 3D visualization built using `pyvista`, exported as a video:
 
-<video controls src="assets/satelite.mp4" title="Title"></video>
+![3D Orbit Visualization](assets/satelite.gif)
 
 
 
