@@ -67,6 +67,7 @@ def TwoDimPlot(hours,steps,Orbits):
     for i in olatlong:
         chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i,color = colors[j])
         j = j + 1
+        if j > 2: j=0
 
 
 

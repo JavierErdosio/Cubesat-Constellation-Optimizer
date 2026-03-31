@@ -5,7 +5,7 @@ import numpy as np
 
 R_earth = 6378
 
-def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,CameraAngle):
+def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,orbPlaneCount,CameraAngle):
     plotter = pv.Plotter()
     
     # Crear esfera Tierra
@@ -35,16 +35,18 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,CameraAngle):
 
 
     # orbit
-    for i in range(SatCount):
-        orbit = pv.Spline(Orbits["OSat%i"%i], 1000)
-        plotter.add_mesh(orbit, color="red", line_width=3)
+    for i in range(orbPlaneCount):
+        for j in range(SatCount):
+            orbit = pv.Spline(Orbits["OSat%i%i"%(i,j)], 1000)
+            plotter.add_mesh(orbit, color="red", line_width=3)
 
     # satelites
     sat = pv.Sphere(radius=400)
     sats = {}
-    for i in range(SatCount):
-        sats["satActor%i"%i] = plotter.add_mesh(sat, color="white",name="Sat%i"%i)
-        sats["satActor%i"%i].SetPosition(Orbits["OSat%i"%i][0])
+    for i in range(orbPlaneCount):
+        for j in range(SatCount):
+            sats["satActor%i%i"%(i,j)]= plotter.add_mesh(sat, color="white",name="Sat%i%i"%(i,j))
+            sats["satActor%i%i"%(i,j)].SetPosition(Orbits["OSat%i%i"%(i,j)][0])
 
 
     if video == True:
@@ -53,17 +55,18 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,CameraAngle):
     else:
         plotter.show(window_size=[1920,1080],interactive_update=True,title="Orbit Visualizer")
 
-    for i in range(n_frames):
-        
-        for j in range(SatCount):
-            sats["satActor%i"%j].SetPosition(Orbits["OSat%i"%j][i])
+    for i in range(n_frames):        
+        for j in range(orbPlaneCount):
+            for k in range(SatCount):
+                sats["satActor%i%i"%(j,k)].SetPosition(Orbits["OSat%i%i"%(j,k)][i])
         earth_actor.RotateZ(360*(hours/23.93446944)/n_frames)
         plotter.add_text("Tiempo: %.3f"%(i/n_frames*hours), position='lower_left', font_size=20,color="white", name="mi_etiqueta")
         
         #Vision Cone
-        for j in range(SatCount):
-            cone = pv.Cone(center=Orbits["OSat%i"%j][i]/2,direction=Orbits["OSat%i"%j][i],height=np.linalg.norm(Orbits["OSat%i"%j][i]),angle=CameraAngle, resolution=100)
-            cone_actor = plotter.add_mesh(cone,color="blue",opacity=0.5,name="cone%i"%j)
+        for j in range(orbPlaneCount):
+            for k in range(SatCount):
+                cone = pv.Cone(center=Orbits["OSat%i%i"%(j,k)][i]/2,direction=Orbits["OSat%i%i"%(j,k)][i],height=np.linalg.norm(Orbits["OSat%i%i"%(j,k)][i]),angle=CameraAngle, resolution=100)
+                cone_actor = plotter.add_mesh(cone,color="blue",opacity=0.5,name="cone%i%i"%(j,k))
         
         if video == True:
             plotter.write_frame()
