@@ -4,11 +4,12 @@ from Keplerianos import Keplerianos
 from TwoBodySolver import SatPoints
 from ThreeDimGraph import ThreeDimGraph as ThreeDimGraph
 from TwoDimPlot import TwoDimPlot
+from optimization import revisitTime
 
 #Extras
 Video = False
-SatCount = 3
-orbPlaneCount = 2
+SatCount = 10
+orbPlaneCount = 10
 
 
 #Time data
@@ -20,7 +21,7 @@ steps = 30*60
 CameraAngle = 4.46 #[deg]
 
 #Orbit
-e = 0.74 #[-] Excentricidad
+e = 0 #[-] Excentricidad
 hp = 600 #[km] Altura del perigeo
 inc = np.deg2rad(-63.4394882) #[rad] Inclinación
 omega = np.deg2rad(270) #[rad] Argumento del perigeo
@@ -48,7 +49,9 @@ for i in SatRogVog:
     Orbits["O"+i] = points
 
 #Ground Track
-TwoDimPlot(hours,steps,Orbits)
+olatlong = TwoDimPlot(hours,steps,Orbits)
+
+revisitTime(olatlong)
 
 #3D Graph
-ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,CameraAngle)
+#ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,CameraAngle)
