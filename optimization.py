@@ -3,7 +3,9 @@ import numpy as np
 from shapely.geometry import Point
 
 
-def revisitTime(olatlong):
+def revisitTime(olatlong,cameraAngle,Orbits):
+
+    cameraAngle = np.deg2rad(cameraAngle)
     
     #Import territory polygon
     territory = gpd.read_file("territory.geojson")
@@ -28,39 +30,54 @@ def revisitTime(olatlong):
     puntos_dentro = points[mask]
     coords = np.array([[p.x, p.y] for p in puntos_dentro])
     
-    
-    
-    
     data=[]
     for i in olatlong:
         data.append(i)
 
     perCov = []
+    m=0
     for i in range(len(olatlong[data[0]][0])):
         satPoints=[]
+        satAltitude = []
         for j in olatlong:
             if i > len(olatlong[j][1])-1:
-                satPoints.append(Point(olatlong[j][1][-1],olatlong[j][0][-1]))            
+                satPoints.append(Point(olatlong[j][1][-1],olatlong[j][0][-1]))
+                if olatlong[j][1][i-1] == np.nan:
+                    satAltitude.append(Point(np.linalg.norm(Orbits[j][m-1]),0))
+                    m-1
+                
+                else:
+                    satAltitude.append(Point(np.linalg.norm(Orbits[j][m]),0))      
             else:
-                satPoints.append(Point(olatlong[j][1][i],olatlong[j][0][i]))        
+                satPoints.append(Point(olatlong[j][1][i],olatlong[j][0][i]))
+                if olatlong[j][1][i] == np.nan:
+                    satAltitude.append(Point(np.linalg.norm(Orbits[j][m-1]),0))
+                    m-1
+                
+                else:
+                    satAltitude.append(Point(np.linalg.norm(Orbits[j][m]),0))    
+            m+1
         
+        alt = gpd.GeoSeries(satAltitude,data)
         sat = gpd.GeoSeries(satPoints,data,crs="EPSG:4326")
         sat = sat.to_crs(epsg=3857)
         satMask = sat.within(territory.union_all())
         satsDentro = sat[satMask]
+        altSatsDentro = alt[satMask]
         coordsSat = np.array([[p.x, p.y] for p in satsDentro])
+        altSats = np.array([p.x for p in altSatsDentro])
 
         #print(f"Cantidad de puntos dentro de Argentina: {len(coords)}")
         #print(f"Cantidad de satelites dentro de Argentina: {len(coordsSat)}")
 
         if len(coordsSat) != 0:
-            dx = coords[:, 0][:, None] - coordsSat[:, 0][None, :]
+            dx = coords[:, 0][:, None] - coordsSat[:, 0][None, :] #Extracts x coordinate and makes subtraction
             dy = coords[:, 1][:, None] - coordsSat[:, 1][None, :]
 
             dist = dx**2 + dy**2
-            rad = (39000/2)**2          #Modificar para swath real
+            swath = ((altSats-6378)*np.tan(cameraAngle)*1000/2)**2      #Modificar para swath real (39000/2)**2   
 
-            covered = dist <= rad
+            covered = dist <= swath
 
             coveredByAny = np.any(covered, axis=1)
 
@@ -71,7 +88,6 @@ def revisitTime(olatlong):
             perCov.append(0)
 
         #print("Cobertura porcentual: %.3f" %percentageCovered)
-    
+    #print(altSats)
     print(max(perCov))
     
-        
