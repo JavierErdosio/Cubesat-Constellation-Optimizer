@@ -7,6 +7,9 @@ from TwoDimPlot import TwoDimPlot
 from optimization import revisitTime
 from time import time
 
+muEarth = 398600 #[km^3/s^2]
+Re = 6378 #Earth Radius
+
 #Extras
 Video = False
 SatCount = 1
@@ -14,15 +17,15 @@ orbPlaneCount = 3
 
 
 #Time data
-#hours = 24
 hours = 23.93446944 #Sidereal day 
 steps = 30*60 #30 seconds and 60 frames per second
 
 #Satellite
 cameraAngle = 4.46 #[deg]
+maxAltitude = 1700 #[km] based on antenna and camera maximum values 
 
 #Orbit
-e = 0#[-] Excentricidad
+e = 0.0732#[-] Excentricidad
 hp = 600 #[km] Altura del perigeo
 inc = np.deg2rad(-63.4394882) #[rad] Inclinación
 omega = np.deg2rad(270) #[rad] Argumento del perigeo
@@ -32,6 +35,15 @@ RAAN = RAAN[0:orbPlaneCount]
 
 theta = np.linspace(0, 2*np.pi, SatCount+1)
 theta = theta[0:SatCount]
+
+#Verification that apoapsis does not exceed maximum altitude
+Rmax = maxAltitude+Re
+Rp = hp + Re
+
+emax = (Rmax-Rp)/(Rmax+Rp)
+
+if e > emax:
+    print("[Warn] Apoapsis is higher than maximum altitude for your antenna or camera. Maximum excentricty = %.5f km. Selected excentricity = %.5f" %(emax,e))
 
 
 #Initial state vector
