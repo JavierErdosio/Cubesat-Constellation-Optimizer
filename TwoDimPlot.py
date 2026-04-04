@@ -3,7 +3,7 @@ import numpy as np
 import copy
 from numpy import cos,sin
 
-plotter = pv.Plotter()
+plotter = pv.Plotter(title="Ground Track")
 chart = pv.Chart2D()
 
 chart.background_texture = pv.read_texture("earth_texture.jpg")
@@ -67,11 +67,12 @@ def TwoDimPlot(hours,steps,Orbits):
     for i in olatlong:
         chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i,color = colors[j])
         j = j + 1
+        if j > 2: j=0
 
 
 
     plotter.add_chart(chart)
 
     plotter.show(window_size=[1920,960],title="Ground Track")
-    return 
+    return olatlong
 
