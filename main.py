@@ -66,7 +66,7 @@ olatlong = TwoDimPlot(hours,steps,Orbits)
 
 ti = time()
 #Max and min revisit time
-revisitTime(olatlong,cameraAngle,Orbits)
+revisitTime(olatlong,cameraAngle,Orbits,hours/steps)
 
 #3D Graph
 #ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)

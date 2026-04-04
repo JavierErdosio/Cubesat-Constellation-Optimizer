@@ -4,7 +4,7 @@ from shapely.geometry import Point
 import matplotlib.pyplot as plt
 
 
-def revisitTime(olatlong,cameraAngle,Orbits):
+def revisitTime(olatlong,cameraAngle,Orbits,dt):
 
     cameraAngle = np.deg2rad(cameraAngle)
     
@@ -99,3 +99,33 @@ def revisitTime(olatlong,cameraAngle,Orbits):
     if pointsObserved < len(coords):
         print("[WARN] %i points observed and %i missed during the simulated time (%.2f %% coverage)" %(pointsObserved,len(coords)-pointsObserved,pointsObserved*100/len(coords)))
     
+    #Revisit gaps
+    revisitGaps = [] 
+    for idx in range(covArray.shape[1]):
+        coveredSeries = covArray[:, idx]
+        coverIndex = np.where(coveredSeries)[0]
+
+        if len(coverIndex) > 1:
+            gaps = np.diff(coverIndex) - 1
+        
+            validGaps = gaps[gaps > 0]
+            validGapsHours = validGaps * dt
+            validGapsHours = validGapsHours[validGapsHours > 0.033]
+            
+            if len(validGapsHours) > 0:
+                revisitGaps.extend(validGapsHours)
+    
+
+    # Stadistics
+    if len(revisitGaps) > 0:
+        revisitGaps = np.array(revisitGaps)
+        
+        maxRevisitTime = revisitGaps.max()
+        meanRevisitTime = revisitGaps.mean()
+        minRevisitTime = revisitGaps.min()
+
+        print(f"Max revisit time (observed area): {maxRevisitTime:.2f} hours")
+        print(f"Mean revisit time (observed area): {meanRevisitTime:.2f} hours")
+        print(f"Min revisit time (observed area): {minRevisitTime:.4f} hours")
+    else:
+        print("No revisits detected")
