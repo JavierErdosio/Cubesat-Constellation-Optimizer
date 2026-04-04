@@ -40,10 +40,6 @@ Interactive 3D visualization built using `pyvista`, exported as a video:
 
 Planned improvements include:
 
-* Automatic orbit optimization
-
-  * Minimize number of satellites
-  * Optimize number of orbital planes
 
 * Maneuver planning
 

@@ -116,7 +116,7 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt):
                 revisitGaps.extend(validGapsHours)
     
 
-    # Stadistics
+    # Statistics
     if len(revisitGaps) > 0:
         revisitGaps = np.array(revisitGaps)
         
