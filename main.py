@@ -12,7 +12,7 @@ Re = 6378 #Earth Radius
 
 #Extras
 Video = False
-SatCount = 1
+SatCount = 3
 orbPlaneCount = 3
 
 
@@ -25,7 +25,7 @@ cameraAngle = 4.46 #[deg]
 maxAltitude = 1700 #[km] based on antenna and camera maximum values 
 
 #Orbit
-e = 0.0732#[-] Excentricidad
+e = 0.07306#[-] Excentricidad
 hp = 600 #[km] Altura del perigeo
 inc = np.deg2rad(-63.4394882) #[rad] Inclinación
 omega = np.deg2rad(270) #[rad] Argumento del perigeo
@@ -43,7 +43,7 @@ Rp = hp + Re
 emax = (Rmax-Rp)/(Rmax+Rp)
 
 if e > emax:
-    print("[Warn] Apoapsis is higher than maximum altitude for your antenna or camera. Maximum excentricty = %.5f km. Selected excentricity = %.5f" %(emax,e))
+    print("[WARN] Apoapsis is higher than maximum altitude for your antenna or camera. Maximum excentricty = %.5f km. Selected excentricity = %.5f" %(emax,e))
 
 
 #Initial state vector
@@ -69,8 +69,8 @@ ti = time()
 revisitTime(olatlong,cameraAngle,Orbits)
 
 #3D Graph
-ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
+#ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
 
 tf = time()
 
-print("Elased time: %.3f [seg]" %(tf-ti))
+print("Elapsed time: %.3f [seg]" %(tf-ti))
