@@ -69,7 +69,7 @@ ti = time()
 revisitTime(olatlong,cameraAngle,Orbits,hours/steps)
 
 #3D Graph
-#ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
+ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
 
 tf = time()
 
