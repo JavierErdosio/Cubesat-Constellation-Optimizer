@@ -37,7 +37,7 @@ def latlong(rvec):
 
     return lat,long
 
-def TwoDimPlot(hours,steps,Orbits):
+def TwoDimPlot(hours,steps,Orbits,plot):
     thetaECEF=[]
     steps = np.linspace(0,hours,steps)
 
@@ -70,9 +70,8 @@ def TwoDimPlot(hours,steps,Orbits):
         if j > 2: j=0
 
 
-
-    plotter.add_chart(chart)
-
-    plotter.show(window_size=[1920,960],title="Ground Track")
+    if plot:
+        plotter.add_chart(chart)
+        plotter.show(window_size=[1920,960],title="Ground Track")
     return olatlong
 
