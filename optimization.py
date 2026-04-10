@@ -1,4 +1,5 @@
 import numpy as np
+import pyvista as pv
 from stateVector import stateVector
 from TwoBodySolver import SatPoints
 from ThreeDimGraph import ThreeDimGraph as ThreeDimGraph
@@ -67,12 +68,14 @@ def optimization(trial):
     if cov < 95:
         raise optuna.TrialPruned()
     
+    pv.close_all()
+
     return(mrt)
 
 
 #Optuna Optimizer
-opt = optuna.create_study(direction='minimize',storage="mysql+pymysql://%s:%s@%s:%s/optuna_db"%(dataBaseUser,dataBasePassword,dataBaseURL,dataBasePort),study_name=studyName)
-opt.optimize(optimization, n_trials=trials)
+opt = optuna.create_study(direction='minimize',storage="mysql+pymysql://%s:%s@%s:%s/optuna_db"%(dataBaseUser,dataBasePassword,dataBaseURL,dataBasePort),study_name=studyName,load_if_exists=True)
+opt.optimize(optimization, n_trials=trials,gc_after_trial=True)
 
 #Results
 print('Best parameters:')

@@ -3,12 +3,7 @@ import numpy as np
 import copy
 from numpy import cos,sin
 
-plotter = pv.Plotter(title="Ground Track")
-chart = pv.Chart2D()
 
-chart.background_texture = pv.read_texture("earth_texture.jpg")
-chart.x_range = [-180,180]
-chart.y_range = [-90,90]
 
 #Curtis equation 4.55
 def R3(theta):
@@ -64,13 +59,20 @@ def TwoDimPlot(hours,steps,Orbits,plot):
 
     colors = ["red", "blue", "green"]
     j = 0
-    for i in olatlong:
-        chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i,color = colors[j])
-        j = j + 1
-        if j > 2: j=0
+    
 
 
     if plot:
+        plotter = pv.Plotter(title="Ground Track")
+        chart = pv.Chart2D()
+
+        chart.background_texture = pv.read_texture("earth_texture.jpg")
+        chart.x_range = [-180,180]
+        chart.y_range = [-90,90]
+        for i in olatlong:
+            chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i,color = colors[j])
+            j = j + 1
+            if j > 2: j=0
         plotter.add_chart(chart)
         plotter.show(window_size=[1920,960],title="Ground Track")
     return olatlong
