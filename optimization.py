@@ -6,22 +6,28 @@ from TwoDimPlot import TwoDimPlot
 from revisitTime import revisitTime
 import optuna
 
+dataBaseUser = ""
+dataBasePassword = ""
+dataBaseURL = "localhost"
+dataBasePort = "3306"
+studyName = "constellationOptimization"
+trials = 500
 
 
 def optimization(trial):
     #Variables
     SatCount = trial.suggest_int('SatCount', 5, 40)
     orbPlaneCount = trial.suggest_int('orbPlaneCount', 3, 10)
-    e = trial.suggest_float('e', 0.0, 1.0, step=0.001) #[-] Eccentricity
+    e = trial.suggest_float('e', 0.0, 0.5, step=0.001) #[-] Eccentricity
     hp = trial.suggest_int('hp', 600, 1700,step=10) #[km] Perigee
 
     #Constants
-    inc = np.deg2rad(-63.4394882) #[rad] Inclinación
+    inc = np.deg2rad(-63.4394882) #[rad] Inclination
     omega = np.deg2rad(270) #[rad] Argumento del perigeo
     Re = 6378
     Rmax = 1700 + Re
     if e > (Rmax - (hp + Re)) / (Rmax + (hp + Re)):
-        raise optuna.TrialPruned() # Le dice a Optuna que aborte este intento
+        raise optuna.TrialPruned() #Optuna abort
 
     #Time data
     hours = 23.93446944 #Sidereal day 
@@ -65,10 +71,10 @@ def optimization(trial):
 
 
 #Optuna Optimizer
-opt = optuna.create_study(direction='minimize')
-opt.optimize(optimization, n_trials=500)
+opt = optuna.create_study(direction='minimize',storage="mysql+pymysql://%s:%s@%s:%s/optuna_db"%(dataBaseUser,dataBasePassword,dataBaseURL,dataBasePort),study_name=studyName)
+opt.optimize(optimization, n_trials=trials)
 
 #Results
-print('Mejores parámetros:')
+print('Best parameters:')
 for key, value in opt.best_params.items():
     print(f'{key}: {value}')

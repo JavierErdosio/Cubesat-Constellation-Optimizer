@@ -4,18 +4,19 @@
 
 ## Overview
 
-This project focuses on the simulation and analysis of a CubeSat constellation designed to provide continuous (24/7) coverage over Argentina.
+This project focuses on the simulation and analysis of a CubeSat constellation designed to provide coverage over Argentina.
 
 The simulated satellites are equipped with a **multispectral imaging payload**, enabling potential applications such as environmental monitoring, agriculture, and disaster management.
 
 
-##  Current Status (as of March 30) 
+##  Current Status (as of April 10 2026) 
 
 
 The project currently includes:
 
 * Ground track generation
 * 3D orbital visualization (video output)
+* Automatic constellation optimization
 
 These features allow for basic analysis of satellite coverage and orbital behavior.
 
@@ -34,7 +35,10 @@ Interactive 3D visualization built using `pyvista`, exported as a video:
 
 ![3D Orbit Visualization](assets/satelite.gif)
 
+### Optuna optimization
+Use of Optuna Library to minimize mean revisit time and creation of database with MySQL in order to display results with Optuna Dashboard 
 
+![Optuna screenshot](assets/optuna.png)
 
 ## Roadmap / Future Work
 
