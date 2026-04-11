@@ -69,7 +69,7 @@ Planned improvements include:
 
 2) Generate `territory.geojson`.
 3) Modify `optimization.py` with your constellation parameters and your database user and password.
-4) Run `optimization.py` to minimize mean revisit time or modify a run `main.py` to view ground track and a 3D animation of your constellation.
+4) Run `optimization.py` to minimize mean revisit time or modify and run `main.py` to view ground track and a 3D animation of your constellation.
 
 ### MySQL and Optuna dashboard
 
