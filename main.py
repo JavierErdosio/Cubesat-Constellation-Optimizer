@@ -4,7 +4,7 @@ from Keplerianos import Keplerianos
 from TwoBodySolver import SatPoints
 from ThreeDimGraph import ThreeDimGraph as ThreeDimGraph
 from TwoDimPlot import TwoDimPlot
-from optimization import revisitTime
+from revisitTime import revisitTime
 from time import time
 
 muEarth = 398600 #[km^3/s^2]
@@ -62,11 +62,11 @@ for i in SatRogVog:
     Orbits["O"+i] = points
 
 #Ground Track
-olatlong = TwoDimPlot(hours,steps,Orbits)
+olatlong = TwoDimPlot(hours,steps,Orbits,True)
 
 ti = time()
 #Max and min revisit time
-revisitTime(olatlong,cameraAngle,Orbits,hours/steps)
+revisitTime(olatlong,cameraAngle,Orbits,hours/steps,False)
 
 #3D Graph
 ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
