@@ -8,6 +8,12 @@ This project focuses on the simulation and analysis of a CubeSat constellation d
 
 The simulated satellites are equipped with a **multispectral imaging payload**, enabling potential applications such as environmental monitoring, agriculture, and disaster management.
 
+## Table of content
+1) [Current Status](#current-status-as-of-april-10-2026)
+2) [Roadmap / Future Work](#roadmap--future-work)
+3) [How to use](#how-to-use)
+4) [Notes](#notes)
+
 
 ##  Current Status (as of April 10 2026) 
 
@@ -47,11 +53,38 @@ Planned improvements include:
 
 * Maneuver planning
 
-  * Orbital adjustments and station-keeping
+  * Parking to final orbit
 
 * Launch simulation
 
-  * Modeling deployment scenarios
+  * Modeling of launchs
+  * Use of optuna to generate database for launch selection
+
+## How to use
+1) Install dependencies:
+
+  ```
+  pip install numpy scipy shapely pyvista geopandas optuna cryptography pymysql
+  ```
+
+2) Generate `territory.geojson`.
+3) Modify `optimization.py` with your constellation parameters and your database user and password.
+4) Run `optimization.py` to minimize mean revisit time or modify a run `main.py` to view ground track and a 3D animation of your constellation.
+
+### MySQL and Optuna dashboard
+
+If you don't have a MySQL server nor an Optuna dashboard server, both can be created using docker. Modify for your application:
+```
+sudo docker run --name optuna-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=optuna_db -p 3306:3306 -d mysql:latest
+```
+
+After having a MySQL server running run `optimization.py` with your user and password to generate the optuna database. If this step isn't done, the following command will give a database version error.
+
+```
+sudo docker run -it --name optuna-dashboard -d --rm -p 8080:8080 ghcr.io/optuna/optuna-dashboard mysql+pymysql://root:password@localhost:3306/optuna_db
+```
+
+Optuna dashboard will be available at [http://localhost:8080](http://localhost:8080).
 
 ## Notes
 
