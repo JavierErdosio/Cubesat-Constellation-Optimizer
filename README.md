@@ -12,7 +12,8 @@ The simulated satellites are equipped with a **multispectral imaging payload**, 
 1) [Current Status](#current-status-as-of-april-10-2026)
 2) [Roadmap / Future Work](#roadmap--future-work)
 3) [How to use](#how-to-use)
-4) [Notes](#notes)
+4) [Documentation](#documentation)
+5) [Notes](#notes)
 
 
 ##  Current Status (as of April 10 2026) 
@@ -85,6 +86,9 @@ sudo docker run -it --name optuna-dashboard -d --rm -p 8080:8080 ghcr.io/optuna/
 ```
 
 Optuna dashboard will be available at [http://localhost:8080](http://localhost:8080).
+
+## Documentation
+- [Results validation](./ResultValidation.md)
 
 ## Notes
 
