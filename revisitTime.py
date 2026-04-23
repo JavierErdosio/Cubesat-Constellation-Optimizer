@@ -121,11 +121,13 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
         revisitGaps = np.array(revisitGaps)
         
         maxRevisitTime = revisitGaps.max()
+        medianRevisitTime = np.median(revisitGaps)
         meanRevisitTime = revisitGaps.mean()
         minRevisitTime = revisitGaps.min()
 
         if not optuna:
             print(f"Max revisit time (observed area): {maxRevisitTime:.2f} hours")
+            print(f"Median revisit time (observed area): {medianRevisitTime:.2f} hours")
             print(f"Mean revisit time (observed area): {meanRevisitTime:.2f} hours")
             print(f"Min revisit time (observed area): {minRevisitTime:.4f} hours")
     else:
