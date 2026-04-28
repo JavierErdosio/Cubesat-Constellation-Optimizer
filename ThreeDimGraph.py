@@ -36,12 +36,11 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,orbPlaneCount,CameraAngle
 
     # orbit
     for i in range(orbPlaneCount):
-        for j in range(SatCount):
-            orbit = pv.Spline(Orbits["OSat%i%i"%(i,j)], 1000)
-            plotter.add_mesh(orbit, color="red", line_width=3)
+        orbit = pv.lines_from_points(Orbits["OSat%i0"%(i)])
+        plotter.add_mesh(orbit, color="red", line_width=1)
 
     # satelites
-    sat = pv.Sphere(radius=400)
+    sat = pv.Sphere(radius=100)
     sats = {}
     for i in range(orbPlaneCount):
         for j in range(SatCount):
