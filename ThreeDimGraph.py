@@ -70,7 +70,7 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,orbPlaneCount,CameraAngle
                 heightC = np.linalg.norm(Orbits["OSat%i%i"%(j,k)][i]-vecEarthRad)
                 
 
-                cone = pv.Cone(center=cent,direction=Orbits["OSat%i%i"%(j,k)][i],height=heightC,angle=CameraAngle, resolution=100)
+                cone = pv.Cone(center=cent,direction=Orbits["OSat%i%i"%(j,k)][i],height=heightC,angle=CameraAngle, resolution=30)
                 cone_actor = plotter.add_mesh(cone,color="blue",opacity=0.5,name="cone%i%i"%(j,k))
         
         if video == True:
