@@ -1,13 +1,12 @@
 import numpy as np
 from numpy import cos,sin
 from scipy.integrate import odeint
-
+from scipy.integrate import solve_ivp
 
 
 #Datos generales
 muTierra = 398600 #[km^3/s^2]
 R_e = 6378 #[km]
-J_2 = 0.00108263
 f = 0.003353 
 
 
@@ -20,39 +19,31 @@ def SatPoints(hours,steps,rogvog):
     y0 = rogvog #Vector de estado
     t = np.linspace(0, tf, pasos)
 
-    def ec(y,t):
+    def ec(t,y):
         X,Y,Z,Vx,Vy,Vz = y
-
-        #i,omega,Omega,theta,r = Keplerianos(y)
-
-        pX,pY,pZ = 0,0,0
+        
         pos = np.linalg.norm([X,Y,Z])
         # Ecuaciones de estado
-        Ax = -muTierra*(X)/pos**3 + pX
-        Ay = -muTierra*(Y)/pos**3 + pY
-        Az = -muTierra*(Z)/pos**3 + pZ
+        Ax = -muTierra*(X)/pos**3
+        Ay = -muTierra*(Y)/pos**3
+        Az = -muTierra*(Z)/pos**3
 
 
         return([Vx,Vy,Vz,Ax,Ay,Az])
 
-    sol = odeint(ec, y0, t)
+    sol = solve_ivp(ec,
+                    [0,tf],
+                    y0,t_eval=t,
+                    method='DOP853',
+                    rtol=1e-10,
+                    atol=1e-14)
 
+    
+    x = sol.y[0]
+    y = sol.y[1]
+    z = sol.y[2]
 
-    x = []
-    y = []
-    z = []
-
-    for i in sol:
-        x.append(i[0])
-        y.append(i[1])
-        z.append(i[2])
 
     points = np.column_stack((x,y,z))
 
     return points
-
-
-
-
-
-
