@@ -1,15 +1,11 @@
 # Results validation - CYGNSS constellation
 ## Reference
-[eoportal](https://www.eoportal.org/satellite-missions/cygnss#CYGNSS.html.20) reports the following information regarding the CYGNSS constellation:
 
-- Altitude = $510 \ km$
-- Inclination = $35 ^\circ$
-- Period = $90$ minutes
-- Swath = $1480$ km (cameraAngle = $70.9863$)
-- $8$ microsats orbiting in pairs with an orbital separation between pairs of $12$ minutes ($0.2 ^\circ$)
-- Median revisit time $\approx \ 2$ hours 
-- Mean revisit time $\approx \ 6$ hours
-
+| Constellation | Sat. Count | Orb. plane count | Sat. separation | Periapsis altitude | Eccentricity | Inclination |    FOV    | Reference |
+|:-------------:|:----------:|:----------------:|:---------------:|:------------------:|:------------:|:-----------:|:---------:|:-----------:|
+|    Landsat    |      2     |         1        |    180 [deg]    |      705 [km]      |       0      |     98.2    |  15 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/landsat-9) |
+|    Oceansat   |      1     |         1        |        -        |      720 [km]      |       0      |     98.2    |  90 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/oceansat-3) |
+|     CYGNSS    |      8     |         1        |    0.8 [deg]    |      510 [km]      |       0      |      35     | 111 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/cygnss) |
 ## Results
 Taking into consideration Puerto Rico's territory (following ` territory.geojson `):
 
@@ -56,8 +52,8 @@ Taking into consideration Puerto Rico's territory (following ` territory.geojson
 
 After running the simulation the following results where obtained:
 
-- Median revisit time = $1.56$ hours
-- Mean revisit time = $4.74$ hours
-
-### Constellation ground track (4 days)
-![CYGNSS ground track](assets/GroundTrackCYGNSS.png)
+| Constellation | Expected mean revisit time | Simulated mean revisit time |  Error  |
+|:-------------:|:--------------------------:|:---------------------------:|:-------:|
+|    Landsat    |     8 days (192 hours)     |   8.43 days (202.42 hours)  | 5.375 % |
+|    Oceansat   |      2 days (48 hours)     |   1.996 days (47.92 hours)  |  -0.2 % |
+|     CYGNSS    |           6 hours          |   Results yet not satisf.   |    -    |
