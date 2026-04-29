@@ -25,7 +25,7 @@ hours = 23.93446944*simDays #Sidereal day
 steps = 30*60*(2*simDays) #30 seconds and 60 frames per second
 
 #Satellite
-cameraAngle = 54 #[deg]
+cameraAngle = 90 #[deg] FOV
 maxAltitude = 1700 #[km] based on antenna and camera maximum values 
 
 #Orbit
