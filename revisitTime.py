@@ -1,23 +1,28 @@
 import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
+from sunVector import getSunVector
 
 
-def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
+def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,EPSG):
 
     cameraAngle = np.deg2rad(cameraAngle)
     
     #Import territory polygon
     territory = gpd.read_file("territory.geojson")
 
-    #Project to web mercator
-    territory = territory.to_crs(epsg=3857) #web mercator (meters)
+    # Territory limits in deg
+    territory_deg = territory.to_crs(epsg=4326)
+    min_lon, min_lat, max_lon, max_lat = territory_deg.total_bounds
+
+    #Project from lat-long to EPSG code of choice
+    territory = territory.to_crs(epsg=EPSG) #EPSG of choice (meters)
 
     #Get rectangular shape of territory
     xmin,ymin, xmax, ymax =territory.total_bounds
 
     #Divide rectangular shape in dots
-    res = 20000 #meters
+    res = terrritoryResolution #meters
     xCoords = np.arange(xmin, xmax, res)
     yCoords = np.arange(ymin, ymax, res)
     xx, yy = np.meshgrid(xCoords, yCoords)
@@ -29,10 +34,6 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
     mask = points.within(territory.union_all())
     pointsWithin = points[mask]
     coords = np.array([[p.x, p.y] for p in pointsWithin])
-
-    #Territory center
-    cx = np.mean(coords[:,0])
-    cy = np.mean(coords[:,1])
     
     data=[]
     for i in olatlong:
@@ -51,34 +52,57 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
     for i in range(len(olonglat[data[0]])):
         satPoints=[]
         satAltitude = []
+        valid_sats = []
+
+        # Current time in seconds
+        t_current = i * dt * 3600
+
+        sun_vector = getSunVector(t_current)
+
         for j in data:
+            if Sun:
+                r_sat = Orbits[j][i]
+                
+                r_sat_norm = r_sat / np.linalg.norm(r_sat)
+                
+                # Scalar product to obtain cosine of the angle between the sun and the satellite
+                dot_product = np.dot(sun_vector, r_sat_norm)
+                
+                # Day/Night filter
+                min_sun_elevation = np.sin(np.deg2rad(10)) 
+                
+                if dot_product < min_sun_elevation:
+                        continue # skip due to night
+
             satPoints.append(Point(olonglat[j][i][0],olonglat[j][i][1]))
-            satAltitude.append(Point(np.linalg.norm(Orbits[j][i]),0)) 
+            satAltitude.append(Point(np.linalg.norm(Orbits[j][i]),0))
+            valid_sats.append(j) 
         
-        alt = gpd.GeoSeries(satAltitude,data)
-        sat = gpd.GeoSeries(satPoints,data,crs="EPSG:4326")
-        sat = sat.to_crs(epsg=3857)
+        alt = gpd.GeoSeries(satAltitude,valid_sats)
+        sat = gpd.GeoSeries(satPoints,valid_sats,crs="EPSG:4326")
         
+        # Filter sats by lat-long with a margin
+        margin = 10 # margin deg (approx 1000 km)
         
+        mask_deg = (sat.geometry.x > min_lon - margin) & \
+                   (sat.geometry.x < max_lon + margin) & \
+                   (sat.geometry.y > min_lat - margin) & \
+                   (sat.geometry.y < max_lat + margin)
+        
+        sat = sat[mask_deg]
+        alt = alt[mask_deg]
 
-        coordsSat = np.array([[p.x, p.y] for p in sat])
-        altSats = np.array([p.x for p in alt])
+        if not sat.empty:
+            sat = sat.to_crs(epsg=EPSG) 
+            coordsSat = np.array([[p.x, p.y] for p in sat])
+            altSats = np.array([p.x for p in alt])
 
-        if len(coordsSat) != 0:
-            #Filter sats within range
-            dx_sat = coordsSat[:,0] - cx
-            dy_sat = coordsSat[:,1] - cy
-            dist_sat = np.sqrt(dx_sat**2 + dy_sat**2)
-            mask = dist_sat < 4000000   #4000km
-            coordsSat = coordsSat[mask]
-            altSats = altSats[mask]
-
-            #Extracts x coordinate and makes subtraction
+            # Extract x coordinate and makes subtraction
             dx = coords[:, 0][:, None] - coordsSat[:, 0][None, :] 
             dy = coords[:, 1][:, None] - coordsSat[:, 1][None, :]
 
             dist = dx**2 + dy**2
-            swath = ((altSats-6378)*np.tan(cameraAngle)*1000/2)**2   
+            swath = ((altSats-6378)*np.tan(cameraAngle/2)*1000)**2   
 
             covered = dist <= swath
 
@@ -91,6 +115,8 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
         else:
             perCov.append(0)
             cov.append(np.zeros(len(coords)))
+    
+    
     if not optuna:
         print("Maximum simultaneus coverage %.3f"%max(perCov))
     covArray = np.array(cov)
@@ -106,7 +132,7 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
         coverIndex = np.where(coveredSeries)[0]
 
         if len(coverIndex) > 1:
-            gaps = np.diff(coverIndex) - 1
+            gaps = np.diff(coverIndex) 
         
             validGaps = gaps[gaps > 0]
             validGapsHours = validGaps * dt
@@ -119,17 +145,29 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna):
     # Statistics
     if len(revisitGaps) > 0:
         revisitGaps = np.array(revisitGaps)
+
+        
         
         maxRevisitTime = revisitGaps.max()
         medianRevisitTime = np.median(revisitGaps)
         meanRevisitTime = revisitGaps.mean()
         minRevisitTime = revisitGaps.min()
 
+        Q1 = np.quantile(revisitGaps,0.25)
+        Q3 = np.quantile(revisitGaps,0.75)
+        IQR = Q3-Q1
+        LB = Q1-1.5*IQR
+        UB = Q3 +1.5*IQR
+        
+        filteredRevisitGaps = revisitGaps[(revisitGaps > LB) & (revisitGaps < UB)]
+        filteredMeanRevisitTime = filteredRevisitGaps.mean()
+
         if not optuna:
-            print(f"Max revisit time (observed area): {maxRevisitTime:.2f} hours")
-            print(f"Median revisit time (observed area): {medianRevisitTime:.2f} hours")
-            print(f"Mean revisit time (observed area): {meanRevisitTime:.2f} hours")
-            print(f"Min revisit time (observed area): {minRevisitTime:.4f} hours")
+            print("Max revisit time (observed area): %.2f hours" %maxRevisitTime)
+            print("Median revisit time (observed area): %.2f hours" %medianRevisitTime)
+            print("Mean revisit time (observed area): %.2f hours" %meanRevisitTime)
+            print("Filtered mean revisit time (observed area): %.2f hours" %filteredMeanRevisitTime)
+            print("Min revisit time (observed area): %.2f hours" %minRevisitTime)
     else:
         if not optuna:
             print("No revisits detected")

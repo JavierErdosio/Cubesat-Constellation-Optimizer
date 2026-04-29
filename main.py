@@ -12,23 +12,27 @@ Re = 6378 #Earth Radius
 
 #Extras
 Video = False
-SatCount = 3
-orbPlaneCount = 3
+SatCount = 1
+orbPlaneCount = 1
+sun = True #If you have a passive sensor set to True
+terrritoryResolution = 5000 #[meters] distance between dots
+EPSG = 3857 #EPSG code that better represent the region of study - 3857 is for Web Mercator
 
 
 #Time data
-hours = 23.93446944 #Sidereal day 
-steps = 30*60 #30 seconds and 60 frames per second
+simDays = 30
+hours = 23.93446944*simDays #Sidereal day 
+steps = 30*60*(2*simDays) #30 seconds and 60 frames per second
 
 #Satellite
-cameraAngle = 4.46 #[deg]
+cameraAngle = 54 #[deg]
 maxAltitude = 1700 #[km] based on antenna and camera maximum values 
 
 #Orbit
-e = 0.07306#[-] Excentricidad
-hp = 600 #[km] Altura del perigeo
-inc = np.deg2rad(-63.4394882) #[rad] Inclinación
-omega = np.deg2rad(270) #[rad] Argumento del perigeo
+e = 0 #[-] Eccentricity
+hp = 720 #[km] Periapsis altitude
+inc = np.deg2rad(98.2) #[rad] Inclination
+omega = np.deg2rad(270) #[rad] Argument of periapsis
 
 RAAN = np.linspace(0, 2*np.pi, orbPlaneCount+1)
 RAAN = RAAN[0:orbPlaneCount]
@@ -66,7 +70,7 @@ olatlong = TwoDimPlot(hours,steps,Orbits,True)
 
 ti = time()
 #Max and min revisit time
-revisitTime(olatlong,cameraAngle,Orbits,hours/steps,False)
+revisitTime(olatlong,cameraAngle,Orbits,hours/steps,False,sun,terrritoryResolution,EPSG)
 
 #3D Graph
 ThreeDimGraph(hours,steps,Orbits,Video,SatCount,orbPlaneCount,cameraAngle)
