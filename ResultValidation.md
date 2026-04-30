@@ -1,11 +1,11 @@
-# Results validation - CYGNSS constellation
+# Results validation
 ## Reference
 
-| Constellation | Sat. Count | Orb. plane count | Sat. separation | Periapsis altitude | Eccentricity | Inclination |    FOV    | Reference |
-|:-------------:|:----------:|:----------------:|:---------------:|:------------------:|:------------:|:-----------:|:---------:|:-----------:|
-|    Landsat    |      2     |         1        |    180 [deg]    |      705 [km]      |       0      |     98.2    |  15 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/landsat-9) |
-|    Oceansat   |      1     |         1        |        -        |      720 [km]      |       0      |     98.2    |  90 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/oceansat-3) |
-|     CYGNSS    |      8     |         1        |    0.8 [deg]    |      510 [km]      |       0      |      35     | 111 [deg] | [eoportal](https://www.eoportal.org/satellite-missions/cygnss) |
+| Constellation | Sat. Count | Orb. plane count | Sat. separation | Periapsis altitude | Eccentricity |    Inclination    |    FOV    | Sensor type | Reference |
+|:-------------:|:----------:|:----------------:|:---------------:|:------------------:|:------------:|:-----------------:|:---------:|:-----------:|:-----------:|
+|    Landsat    |      2     |         1        |    180 [deg]    |      705 [km]      |       0      |     98.2 [deg]    |  15 [deg] |   Passive   |[eoportal](https://www.eoportal.org/satellite-missions/landsat-9) |
+|    Oceansat   |      1     |         1        |        -        |      720 [km]      |       0      |     98.2 [deg]    |  90 [deg] |   Active    |[eoportal](https://www.eoportal.org/satellite-missions/oceansat-3) |
+|      TRMM     |      1     |         1        |        -        |      403 [km]      |       0      |      35 [deg]     |  95 [deg] |   Active    |[eoportal](https://www.eoportal.org/satellite-missions/trmm) & [NASA Presentation](https://gpm.nasa.gov/sites/default/files/meeting_files/2021_IPWG_Workshop/PMM.ACCP_.pdf)|
 ## Results
 Taking into consideration Puerto Rico's territory (following ` territory.geojson `):
 
@@ -54,6 +54,6 @@ After running the simulation the following results where obtained:
 
 | Constellation | Expected mean revisit time | Simulated mean revisit time |  Error  |
 |:-------------:|:--------------------------:|:---------------------------:|:-------:|
-|    Landsat    |     8 days (192 hours)     |   8.43 days (202.42 hours)  | 5.375 % |
-|    Oceansat   |      2 days (48 hours)     |   1.996 days (47.92 hours)  |  -0.2 % |
-|     CYGNSS    |           6 hours          |   Results yet not satisf.   |    -    |
+|    Landsat    |     8 days (192 hours)     |   9.15 days (219.57 hours)  | 14.36 % |
+|    Oceansat   |      2 days (48 hours)     |   1.996 days (47.90 hours)  | -0.2 %  |
+|      TRMM     |     $\approx$ 11.5 hours   |         12.29 hours         |  6.87 % |
