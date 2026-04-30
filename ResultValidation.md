@@ -4,7 +4,7 @@
 | Constellation | Sat. Count | Orb. plane count | Sat. separation | Periapsis altitude | Eccentricity |    Inclination    |    FOV    | Sensor type | Reference |
 |:-------------:|:----------:|:----------------:|:---------------:|:------------------:|:------------:|:-----------------:|:---------:|:-----------:|:-----------:|
 |    Landsat    |      2     |         1        |    180 [deg]    |      705 [km]      |       0      |     98.2 [deg]    |  15 [deg] |   Passive   |[eoportal](https://www.eoportal.org/satellite-missions/landsat-9) |
-|    Oceansat   |      1     |         1        |        -        |      720 [km]      |       0      |     98.2 [deg]    |  90 [deg] |   Active    |[eoportal](https://www.eoportal.org/satellite-missions/oceansat-3) |
+|    Oceansat   |      1     |         1        |        -        |      720 [km]      |       0      |     98.2 [deg]    |  90 [deg] |   Passive   |[eoportal](https://www.eoportal.org/satellite-missions/oceansat-3) |
 |      TRMM     |      1     |         1        |        -        |      403 [km]      |       0      |      35 [deg]     |  95 [deg] |   Active    |[eoportal](https://www.eoportal.org/satellite-missions/trmm) & [NASA Presentation](https://gpm.nasa.gov/sites/default/files/meeting_files/2021_IPWG_Workshop/PMM.ACCP_.pdf)|
 ## Results
 Taking into consideration Puerto Rico's territory (following ` territory.geojson `):
