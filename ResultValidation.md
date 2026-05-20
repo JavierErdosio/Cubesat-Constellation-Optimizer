@@ -50,10 +50,10 @@ Taking into consideration Puerto Rico's territory (following ` territory.geojson
 
 ```
 
-After running the simulation the following results where obtained:
+After running the 3 simulations of each constellation, the following average results where obtained:
 
 | Constellation | Expected mean revisit time | Simulated mean revisit time |  Error  |
 |:-------------:|:--------------------------:|:---------------------------:|:-------:|
-|    Landsat    |     8 days (192 hours)     |   9.15 days (219.57 hours)  | 14.36 % |
+|    Landsat    |     8 days (192 hours)     |   7.77 days (186.58 hours)  | -3.00 % |
 |    Oceansat   |      2 days (48 hours)     |   1.996 days (47.90 hours)  | -0.2 %  |
-|      TRMM     |     $\approx$ 11.5 hours   |         12.29 hours         |  6.87 % |
+|      TRMM     |     $\approx$ 11.5 hours   |         11.23 hours         | -2.32 % |

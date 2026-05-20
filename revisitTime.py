@@ -156,9 +156,15 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,E
         Q1 = np.quantile(revisitGaps,0.25)
         Q3 = np.quantile(revisitGaps,0.75)
         IQR = Q3-Q1
-        LB = Q1-1.5*IQR
-        UB = Q3 +1.5*IQR
+        LB = Q1-0.5*IQR
+        UB = Q3 +0.5*IQR
+
+        if LB < 0:
+            LB = 0
         
+        if UB > maxRevisitTime:
+            UB = Q3
+
         filteredRevisitGaps = revisitGaps[(revisitGaps > LB) & (revisitGaps < UB)]
         filteredMeanRevisitTime = filteredRevisitGaps.mean()
 
