@@ -32,12 +32,12 @@ def latlong(rvec):
 
     return lat,long
 
-def TwoDimPlot(hours,steps,Orbits,plot):
+def TwoDimPlot(hours,step,Orbits,plot):
     thetaECEF=[]
-    steps = np.linspace(0,hours,steps)
+    steps = np.linspace(0,hours,step)
 
     for i in steps:
-        thetaECEF.append((i/hours*2*np.pi))
+        thetaECEF.append((i/23.93446944*2*np.pi))
         
     
     OrbitsECEF = {}
