@@ -81,15 +81,19 @@ def optimization(trial):
     if cov < 95:
         raise optuna.TrialPruned()
     
+    if mrt == None:
+        raise optuna.TrialPruned()
+    
     pv.close_all()
 
-    return(mrt)
+    return(mrt,SatCount,orbPlaneCount,e,hp)
 
 
 #Optuna Optimizer
 samp = optuna.samplers.TPESampler(n_startup_trials=300)
-opt = optuna.create_study(sampler=samp,direction='minimize',storage="mysql+pymysql://%s:%s@%s:%s/optuna_db"%(dataBaseUser,dataBasePassword,dataBaseURL,dataBasePort),study_name=studyName,load_if_exists=True)
-opt.optimize(optimization, n_trials=trials,gc_after_trial=True)
+direc = ["minimize","minimize","minimize","minimize","minimize"]
+opt = optuna.create_study(sampler=samp,directions=direc,storage="mysql+pymysql://%s:%s@%s:%s/optuna_db"%(dataBaseUser,dataBasePassword,dataBaseURL,dataBasePort),study_name=studyName,load_if_exists=True)
+opt.optimize(optimization, n_trials=trials,n_jobs=-1,gc_after_trial=True)
 
 #Results
 print('Best parameters:')

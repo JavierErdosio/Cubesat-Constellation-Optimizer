@@ -179,4 +179,4 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,E
             print("No revisits detected")
         meanRevisitTime = 23.93
     
-    return meanRevisitTime,pointsObserved*100/len(coords)
+    return filteredMeanRevisitTime,pointsObserved*100/len(coords)
