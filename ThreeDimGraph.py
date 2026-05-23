@@ -59,7 +59,7 @@ def ThreeDimGraph(hours,n_frames,Orbits,video,SatCount,orbPlaneCount,CameraAngle
             for k in range(SatCount):
                 sats["satActor%i%i"%(j,k)].SetPosition(Orbits["OSat%i%i"%(j,k)][i])
         earth_actor.RotateZ(360*(hours/23.93446944)/n_frames)
-        plotter.add_text("Tiempo: %.3f"%(i/n_frames*hours), position='lower_left', font_size=20,color="white", name="mi_etiqueta")
+        plotter.add_text("Time: %.3f [hours]"%(i/n_frames*hours), position='lower_left', font_size=20,color="white", name="mi_etiqueta")
         
         #Vision Cone
         for j in range(orbPlaneCount):

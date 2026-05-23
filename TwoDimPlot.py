@@ -57,23 +57,18 @@ def TwoDimPlot(hours,step,Orbits,plot):
             olatlong[i][0].append(lat) 
             olatlong[i][1].append(long)
 
-    colors = ["red", "blue", "green"]
-    j = 0
-    
-
-
     if plot:
-        plotter = pv.Plotter(title="Ground Track")
+        pv.global_theme.transparent_background = True
+        plotter = pv.Plotter(title="Ground Track",off_screen=False)
         chart = pv.Chart2D()
 
         chart.background_texture = pv.read_texture("earth_texture.jpg")
         chart.x_range = [-180,180]
         chart.y_range = [-90,90]
         for i in olatlong:
-            chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i,color = colors[j])
-            j = j + 1
-            if j > 2: j=0
+            chart.line(olatlong[i][1],olatlong[i][0],width=2,label=i)
         plotter.add_chart(chart)
+        #plotter.screenshot("groundTrack.png",window_size=[1920,960],scale=10)
         plotter.show(window_size=[1920,960],title="Ground Track")
     return olatlong
 
