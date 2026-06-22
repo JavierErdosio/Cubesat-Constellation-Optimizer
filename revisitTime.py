@@ -2,6 +2,7 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Point
 from sunVector import getSunVector
+import matplotlib.pyplot as plt
 
 
 def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,EPSG):
@@ -140,7 +141,13 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,E
             
             if len(validGapsHours) > 0:
                 revisitGaps.extend(validGapsHours)
-    
+
+    covPerPoint = np.transpose(covArray)
+    totalGapsPerPoint = []
+    for i in covPerPoint:
+        gapsPerPoint = np.diff(np.where(i)[0])*dt
+        gapsPerPoint = gapsPerPoint[gapsPerPoint> 0.033]
+        totalGapsPerPoint.append(gapsPerPoint)
 
     # Statistics
     if len(revisitGaps) > 0:
@@ -168,6 +175,36 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,E
         filteredRevisitGaps = revisitGaps[(revisitGaps > LB) & (revisitGaps < UB)]
         filteredMeanRevisitTime = filteredRevisitGaps.mean()
 
+        #Statistics per point (useful for heatmaps)
+        maxPerPoint = []
+        meanPerPoint = []
+        minPerPoint = []
+        for j in totalGapsPerPoint:
+            filtered = j[(j > LB) & (j < UB)]
+            maxPerPoint.append(j.max())
+            meanPerPoint.append(filtered.mean())
+            minPerPoint.append(j.min())
+        
+        legend_parameters = {
+            "label": "Mean revisit time (hours)",
+            "orientation": "vertical",
+            "shrink": 0.8,   
+            "pad": 0.05
+        }
+
+        points_clean = pointsWithin.reset_index(drop=True)
+        fig, ax = plt.subplots(figsize=(8, 12))
+        territory.plot(ax=ax, edgecolor='black', facecolor='none')
+        gdf = gpd.GeoDataFrame({"value": meanPerPoint},geometry=points_clean)
+        gdf.plot(ax=ax,column="value",legend=True,legend_kwds=legend_parameters,cmap='magma_r',alpha=0.9)
+        ax.grid(False)
+        plt.xticks([])
+        plt.yticks([])
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        plt.savefig("Heatmapmean.jpg",dpi=500, bbox_inches='tight')
+        #plt.show()
+
         if not optuna:
             print("Max revisit time (observed area): %.2f hours" %maxRevisitTime)
             print("Median revisit time (observed area): %.2f hours" %medianRevisitTime)
@@ -179,4 +216,4 @@ def revisitTime(olatlong,cameraAngle,Orbits,dt,optuna,Sun,terrritoryResolution,E
             print("No revisits detected")
         meanRevisitTime = 23.93
     
-    return meanRevisitTime,pointsObserved*100/len(coords)
+    return filteredMeanRevisitTime,pointsObserved*100/len(coords)
